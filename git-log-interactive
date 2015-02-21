@@ -1,0 +1,24 @@
+#!/bin/bash
+#set -xv
+
+remove_color() {
+   echo $1 | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
+}
+
+IFS="
+"
+select line in $(git log --all --format="%C(auto)%h%d %<(100,trunc)%s")
+do 
+   echo $line
+   line_plain=$(remove_color "$line")
+   commit=${line_plain:0:6}
+   #avoid to use current line to get decorate, (a message can contain parenthesis)
+   select action in checkout show tshow branch diff tdiff exit
+   do
+      if [ $action == "exit" ]
+      then
+         break
+      fi
+      git $action $commit
+   done
+done 
