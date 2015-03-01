@@ -13,12 +13,12 @@ do
    line_plain=$(remove_color "$line")
    commit=${line_plain:0:6}
    #avoid to use current line to get decorate, (a message can contain parenthesis)
-   select action in checkout show tshow branch diff tdiff exit
+   select action in checkout show tshow branch diff tdiff rebase\ -i exit
    do
       if [ $action == "exit" ]
       then
          break
       fi
-      git $action $commit
+      eval git $action $commit
    done
 done 
